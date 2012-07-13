@@ -1,5 +1,5 @@
 name:                timers
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Simple package that implements timers.
 description:         Simple package that implements timers. Both "one-shot" and "repeating" timers are implemented.
 license:             BSD3
