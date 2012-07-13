@@ -21,6 +21,9 @@ library
         Control.Concurrent.Timer
       , Control.Concurrent.Timer.Lifted
 
+    other-modules:
+        Control.Concurrent.Timer.Types
+
     build-depends:
         base              == 4.5.*
       , lifted-base       == 0.1.*
