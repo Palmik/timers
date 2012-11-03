@@ -1,5 +1,5 @@
 name:                timers
-version:             0.2.0.0
+version:             0.2.0.1
 synopsis:            Simple package that implements timers.
 description:         Simple package that implements timers. Both "one-shot" and "repeating" timers are implemented.
 license:             BSD3
@@ -25,8 +25,8 @@ library
         Control.Concurrent.Timer.Types
 
     build-depends:
-        base              == 4.5.*
-      , lifted-base       == 0.1.*
+        base              >= 4.5 && < 4.7
+      , lifted-base       >= 0.1 && < 0.3
       , monad-control     == 0.3.*
       , transformers-base == 0.4.*
       , suspend           == 0.1.*
