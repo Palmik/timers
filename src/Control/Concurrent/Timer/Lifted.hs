@@ -31,9 +31,9 @@ import           Control.Concurrent.Timer.Types (Timer(..), TimerImmutable(..))
 -- | Attempts to start a timer.
 -- The started timer will have the given delay and action associated and will be one-shot timer.
 --
--- If the timer was already initialized, it the previous timer will be stoped (the thread killed) and the timer will be started anew.
+-- If the timer was initialized before it will be stopped (killed) and started anew.
 --
--- Returns True if the strat was successful,
+-- Returns True if the start was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer) returns False.
 oneShotStart :: MonadBaseControl IO m
                => Timer m
@@ -56,14 +56,14 @@ oneShotStart (Timer mvmtim) a d = do
 -- | Attempts to start a timer.
 -- The started timer will have the given delay and action associated and will be repeated timer.
 --
--- If the timer was already initialized, it the previous timer will be stoped (the thread killed) and the timer will be started anew.
+-- If the timer was initialized before it will be stopped (killed) and started anew.
 --
--- Returns True if the strat was successful,
+-- Returns True if the start was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer) returns False.
 repeatedStart :: MonadBaseControl IO m
                 => Timer m
-                -> m ()   -- ^ The action the timer will start with.
-                -> Delay  -- ^ The dealy the timer will start with.
+                -> m ()  -- ^ The action the timer will start with.
+                -> Delay -- ^ The dealy the timer will start with.
                 -> m Bool
 repeatedStart (Timer mvmtim) a d = do
     mtim <- tryTakeMVar mvmtim
@@ -81,7 +81,7 @@ repeatedStart (Timer mvmtim) a d = do
 -- | Attempts to restart already initialized timer.
 -- The restarted timer will have the same delay and action associated and will be one-shot timer.
 --
--- Returns True if the restrat was successful,
+-- Returns True if the restart was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer or the timer was not initialized) returns False.
 oneShotRestart :: MonadBaseControl IO m
                => Timer m
@@ -98,8 +98,8 @@ oneShotRestart (Timer mvmtim) = do
 
 -- | Attempts to restart already initialized timer.
 -- The restarted timer will have the same delay and action associated and will be one-shot timer.
--- 
--- Returns True if the restrat was successful,
+--
+-- Returns True if the restart was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer or the timer was not initialized) returns False.
 repeatedRestart :: MonadBaseControl IO m
                 => Timer m
@@ -116,16 +116,16 @@ repeatedRestart (Timer mvmtim) = do
 
 -- | Executes the the given action once after the given delay elapsed, no sooner, maybe later.
 oneShotTimer :: MonadBaseControl IO m
-             => m ()        -- ^ The action to be executed.
-             -> Delay      -- ^ The (minimal) time until the execution in microseconds.
+             => m ()  -- ^ The action to be executed.
+             -> Delay -- ^ The (minimal) time until the execution in microseconds.
              -> m (Timer m)
 oneShotTimer a d = Timer <$> (oneShotTimerImmutable a d >>= newMVar . Just)
 {-# INLINE oneShotTimer #-}
 
 -- | Executes the the given action repeatedly with at least the given delay between executions.
 repeatedTimer :: MonadBaseControl IO m
-              => m ()    -- ^ The action to be executed.
-              -> Delay   -- ^ The (minimal) delay between executions.
+              => m ()  -- ^ The action to be executed.
+              -> Delay -- ^ The (minimal) delay between executions.
               -> m (Timer m)
 repeatedTimer a d = Timer <$> (repeatedTimerImmutable a d >>= newMVar . Just)
 {-# INLINE repeatedTimer #-}
@@ -157,8 +157,8 @@ type TimerIO = Timer IO
 -- (at least) after the given delay and stores the action,
 -- delay and thread id in the immutable TimerImmutable value.
 oneShotTimerImmutable :: MonadBaseControl IO m
-                      => m ()        -- ^ The action to be executed.
-                      -> Delay       -- ^ The (minimal) time until the execution in microseconds.
+                      => m ()  -- ^ The action to be executed.
+                      -> Delay -- ^ The (minimal) time until the execution in microseconds.
                       -> m (TimerImmutable m)
 oneShotTimerImmutable a d = TimerImmutable a d <$> oneShotAction a d
 {-# INLINE oneShotTimerImmutable #-}
@@ -167,8 +167,8 @@ oneShotTimerImmutable a d = TimerImmutable a d <$> oneShotAction a d
 -- with (at least) the given delay between each execution and stores the action,
 -- delay and thread id in the immutable TimerImmutable value.
 repeatedTimerImmutable :: MonadBaseControl IO m
-                       => m ()        -- ^ The action to be executed.
-                       -> Delay       -- ^ The (minimal) time until the execution in microseconds.
+                       => m ()  -- ^ The action to be executed.
+                       -> Delay -- ^ The (minimal) time until the execution in microseconds.
                        -> m (TimerImmutable m)
 repeatedTimerImmutable a d = TimerImmutable a d <$> repeatedAction a d
 {-# INLINE repeatedTimerImmutable #-}

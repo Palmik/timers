@@ -25,14 +25,14 @@ import           Control.Concurrent.Timer.Types (Timer(..), TimerImmutable(..))
 ------------------------------------------------------------------------------
 
 -- | Attempts to start a timer.
--- The started timer will have the given delay and action associated and will be one-shot timer.
+-- The started timer will have the given delay and action associated with it and will be one-shot timer.
 --
--- If the timer was already initialized, it the previous timer will be stoped (the thread killed) and the timer will be started anew.
+-- If the timer was initialized before it will be stopped (killed) and started anew.
 --
--- Returns True if the strat was successful,
+-- Returns True if the start was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer) returns False.
 oneShotStart :: TimerIO
-             -> IO ()  -- ^ The action the timer will start with.
+             -> IO () -- ^ The action the timer will start with.
              -> Delay -- ^ The dealy the timer will start with.
              -> IO Bool
 oneShotStart (Timer mvmtim) a d = do
@@ -49,15 +49,15 @@ oneShotStart (Timer mvmtim) a d = do
 {-# INLINEABLE oneShotStart #-}
 
 -- | Attempts to start a timer.
--- The started timer will have the given delay and action associated and will be repeated timer.
+-- The started timer will have the given delay and action associated with it and will be repeated timer.
 --
--- If the timer was already initialized, it the previous timer will be stoped (the thread killed) and the timer will be started anew.
+-- If the timer was initialized before it will be stopped (killed) and started anew.
 --
--- Returns True if the strat was successful,
+-- Returns True if the start was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer) returns False.
 repeatedStart :: TimerIO
-              -> IO ()   -- ^ The action the timer will start with.
-              -> Delay  -- ^ The dealy the timer will start with.
+              -> IO () -- ^ The action the timer will start with.
+              -> Delay -- ^ The dealy the timer will start with.
               -> IO Bool
 repeatedStart (Timer mvmtim) a d = do
     mtim <- tryTakeMVar mvmtim
@@ -73,9 +73,9 @@ repeatedStart (Timer mvmtim) a d = do
 {-# INLINEABLE repeatedStart #-}
 
 -- | Attempts to restart already initialized timer.
--- The restarted timer will have the same delay and action associated and will be one-shot timer.
+-- The restarted timer will have the same delay and action associated with it and will be one-shot timer.
 --
--- Returns True if the restrat was successful,
+-- Returns True if the restart was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer or the timer was not initialized) returns False.
 oneShotRestart :: TimerIO
                -> IO Bool
@@ -90,9 +90,9 @@ oneShotRestart (Timer mvmtim) = do
 {-# INLINEABLE oneShotRestart #-}
 
 -- | Attempts to restart already initialized timer.
--- The restarted timer will have the same delay and action associated and will be one-shot timer.
+-- The restarted timer will have the same delay and action associated with it and will be one-shot timer.
 --
--- Returns True if the restrat was successful,
+-- Returns True if the restart was successful,
 -- otherwise (e.g. other thread is attempting to manipulate the timer or the timer was not initialized) returns False.
 repeatedRestart :: TimerIO
                 -> IO Bool
@@ -107,15 +107,15 @@ repeatedRestart (Timer mvmtim) = do
 {-# INLINEABLE repeatedRestart #-}
 
 -- | Executes the the given action once after the given delay elapsed, no sooner, maybe later.
-oneShotTimer :: IO ()        -- ^ The action to be executed.
-             -> Delay      -- ^ The (minimal) time until the execution in microseconds.
+oneShotTimer :: IO () -- ^ The action to be executed.
+             -> Delay -- ^ The (minimal) time until the execution in microseconds.
              -> IO TimerIO
 oneShotTimer a d = Timer <$> (oneShotTimerImmutable a d >>= newMVar . Just)
 {-# INLINE oneShotTimer #-}
 
 -- | Executes the the given action repeatedly with at least the given delay between executions.
-repeatedTimer :: IO ()    -- ^ The action to be executed.
-              -> Delay   -- ^ The (minimal) delay between executions.
+repeatedTimer :: IO () -- ^ The action to be executed.
+              -> Delay -- ^ The (minimal) delay between executions.
               -> IO TimerIO
 repeatedTimer a d = Timer <$> (repeatedTimerImmutable a d >>= newMVar . Just)
 {-# INLINE repeatedTimer #-}
@@ -140,13 +140,13 @@ newTimer = Timer <$> newMVar Nothing
 -- | Utility
 
 type TimerIO = Timer IO
-type TimerImmutableIO = TimerImmutable IO 
+type TimerImmutableIO = TimerImmutable IO
 
 -- | Forks a new thread that runs the supplied action
 -- (at least) after the given delay and stores the action,
 -- delay and thread id in the immutable TimerImmutable value.
-oneShotTimerImmutable :: IO ()        -- ^ The action to be executed.
-                      -> Delay       -- ^ The (minimal) time until the execution in microseconds.
+oneShotTimerImmutable :: IO () -- ^ The action to be executed.
+                      -> Delay -- ^ The (minimal) time until the execution in microseconds.
                       -> IO TimerImmutableIO
 oneShotTimerImmutable a d = TimerImmutable a d <$> oneShotAction a d
 {-# INLINE oneShotTimerImmutable #-}
@@ -154,8 +154,8 @@ oneShotTimerImmutable a d = TimerImmutable a d <$> oneShotAction a d
 -- | Forks a new thread that repeats the supplied action
 -- with (at least) the given delay between each execution and stores the action,
 -- delay and thread id in the immutable TimerImmutable value.
-repeatedTimerImmutable :: IO ()        -- ^ The action to be executed.
-                       -> Delay       -- ^ The (minimal) time until the execution in microseconds.
+repeatedTimerImmutable :: IO () -- ^ The action to be executed.
+                       -> Delay -- ^ The (minimal) time until the execution in microseconds.
                        -> IO TimerImmutableIO
 repeatedTimerImmutable a d = TimerImmutable a d <$> repeatedAction a d
 {-# INLINE repeatedTimerImmutable #-}
