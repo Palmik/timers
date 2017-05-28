@@ -33,7 +33,7 @@ import           Control.Concurrent.Timer.Types (Timer(..), TimerImmutable(..))
 -- otherwise (e.g. other thread is attempting to manipulate the timer) returns False.
 oneShotStart :: TimerIO
              -> IO () -- ^ The action the timer will start with.
-             -> Delay -- ^ The dealy the timer will start with.
+             -> Delay -- ^ The delay the timer will start with.
              -> IO Bool
 oneShotStart (Timer mvmtim) a d = do
     mtim <- tryTakeMVar mvmtim
@@ -57,7 +57,7 @@ oneShotStart (Timer mvmtim) a d = do
 -- otherwise (e.g. other thread is attempting to manipulate the timer) returns False.
 repeatedStart :: TimerIO
               -> IO () -- ^ The action the timer will start with.
-              -> Delay -- ^ The dealy the timer will start with.
+              -> Delay -- ^ The delay the timer will start with.
               -> IO Bool
 repeatedStart (Timer mvmtim) a d = do
     mtim <- tryTakeMVar mvmtim
