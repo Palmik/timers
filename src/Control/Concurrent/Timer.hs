@@ -106,14 +106,14 @@ repeatedRestart (Timer mvmtim) = do
          _ -> return False
 {-# INLINEABLE repeatedRestart #-}
 
--- | Executes the the given action once after the given delay elapsed, no sooner, maybe later.
+-- | Executes the given action once after the given delay elapsed, no sooner, maybe later.
 oneShotTimer :: IO () -- ^ The action to be executed.
              -> Delay -- ^ The (minimal) time until the execution in microseconds.
              -> IO TimerIO
 oneShotTimer a d = Timer <$> (oneShotTimerImmutable a d >>= newMVar . Just)
 {-# INLINE oneShotTimer #-}
 
--- | Executes the the given action repeatedly with at least the given delay between executions.
+-- | Executes the given action repeatedly with at least the given delay between executions.
 repeatedTimer :: IO () -- ^ The action to be executed.
               -> Delay -- ^ The (minimal) delay between executions.
               -> IO TimerIO
